@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+# 設定全域環境變數，強制使用 Node.js 24 以消除警告
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,7 +27,7 @@ jobs:
           sed -i 's|<head>|<head><script>window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};</script>|g' index.html
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
