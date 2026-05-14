@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>日文學習助手 - Pro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* 整合自 Figma theme.css 的配色與全域設定 */
+        :root {
+            --background: #f8fafc; /* slate-50 */
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background-color: var(--background);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 讓 App 容器至少佔滿全螢幕 */
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 預留 Figma 中設計的漸層按鈕樣式 */
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        /* 隱藏滾動條但保持功能 (iOS 風格) */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="flex items-center justify-center h-screen">
+            <p class="text-slate-400 animate-pulse">程式載入中...</p>
+        </div>
+    </div>
+
+    <script type="module" src="./js/firebaseConfig.js"></script>
+
+    <script type="module" src="./js/services/categoryService.js"></script>
+    <script type="module" src="./js/services/wordService.js"></script>
+
+    <script type="module" src="./js/main.js"></script>
+
+    <script>
+        // 初始化 Lucide 圖示
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
