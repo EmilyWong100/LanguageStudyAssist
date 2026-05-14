@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # 確保這與你的主分支名稱一致
+      - main  # 確保與你的主分支名稱一致
 
 permissions:
   contents: read
