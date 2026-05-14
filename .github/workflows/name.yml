@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 或是你的主分支名稱
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject Firebase Secret
+        run: |
+          # 這行會將 GitHub Secret 內容轉為 JS 物件並插入到 index.html 的 <head> 標籤後
+          # 請確保你的 Secret 名稱真的是 FIREBASE_API_KEY
+          sed -i 's|<head>|<head><script>window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};</script>|g' index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' # 部署整個根目錄
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
