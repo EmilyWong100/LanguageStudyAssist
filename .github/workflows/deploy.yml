@@ -21,10 +21,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+          
       - name: Create Firebase Config File
-        # 用 printf 將 Secret 直接寫入成一個獨立的 js 檔案
+        # 使用 EOF 安全區塊，徹底避免因為 JSON 內有換行或特殊字元導致的 sed 語法崩潰
         run: |
-          printf "window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};" > firebase-config.js
+          cat << 'EOF' > firebase-config.js
+          window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};
+          EOF
+        
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
