@@ -17,107 +17,159 @@ export const renderCategoryDetail = async (categoryId, categoryName) => {
 
         let html = `
             <div class="min-h-screen bg-slate-50 pb-20">
-                <nav class="p-4 flex justify-between items-center bg-white border-b border-slate-100 sticky top-0 z-10">
-                    <button id="back-to-home" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <h2 class="text-lg font-bold text-slate-800">${categoryName}</h2>
+                <nav class="p-4 flex justify-between items-center bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm">
+                    <div class="flex items-center space-x-2">
+                        <button id="back-to-home" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <h2 class="text-xl font-bold text-slate-800" id="current-category-title">${categoryName}</h2>
+                    </div>
+                    
                     <div class="relative">
-                        <button id="category-settings-btn" class="p-2 hover:bg-slate-100 rounded-full">
+                        <button id="category-settings-btn" class="p-2 hover:bg-slate-100 rounded-full transition-colors focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                             </svg>
                         </button>
-                        <div id="settings-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-2 z-20">
-                            <button id="modify-cat" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Modify Name</button>
-                            <button id="delete-cat" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete Category</button>
+                        
+                        <div id="settings-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-100 shadow-xl py-2 z-20">
+                            <button id="modify-cat" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center space-x-2">
+                                <span>✏️ Modify Name</span>
+                            </button>
+                            <button id="copy-cat" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center space-x-2">
+                                <span>📋 Copy Link / ID</span>
+                            </button>
+                            <hr class="border-slate-100 my-1">
+                            <button id="delete-cat" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2">
+                                <span>🗑️ Delete Category</span>
+                            </button>
                         </div>
                     </div>
                 </nav>
 
-                <div class="p-6 space-y-4">
-                    ${words.length === 0 ? `
-                        <div class="text-center py-20 text-slate-400">
-                            <p>No words yet. Let's add some!</p>
-                        </div>
-                    ` : words.map(word => renderWordCard(word)).join('')}
-                </div>
+                <main class="p-4 space-y-4">
+        `;
 
-                <button id="fab-add-word" class="fixed bottom-8 right-8 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 active:scale-95 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        if (words.length === 0) {
+            html += `
+                <div class="text-center py-12 text-slate-400">
+                    <p class="text-lg">這個類別還沒有單字</p>
+                    <p class="text-sm mt-1">點擊右下角 + 號開始新增吧！</p>
+                </div>
+            `;
+        } else {
+            words.forEach(word => {
+                html += `
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative group">
+                        <button class="delete-word-btn absolute top-4 right-4 p-1.5 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 rounded-full hover:bg-slate-50 transition-all" data-word-id="${word.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                        <div class="flex items-baseline space-x-2">
+                            <h3 class="text-xl font-bold text-slate-800">${word.kanji || word.hiragana}</h3>
+                            ${word.kanji ? `<span class="text-sm text-slate-500">[${word.hiragana}]</span>` : ''}
+                        </div>
+                        <p class="text-slate-600 font-medium mt-2">${word.meaning}</p>
+                        
+                        ${word.sentences && word.sentences.length > 0 ? `
+                            <div class="mt-3 pt-3 border-t border-slate-50 space-y-1.5">
+                                ${word.sentences.map(s => `<p class="text-xs text-slate-500 bg-slate-50 p-2 rounded-xl">💡 ${s}</p>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        html += `
+                </main>
+
+                <button id="add-word-fab" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 flex items-center justify-center transition-all active:scale-95 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                     </svg>
                 </button>
             </div>
         `;
 
         app.innerHTML = html;
+
+        // 5. 綁定控制事件
         bindCategoryEvents(categoryId, categoryName);
 
     } catch (error) {
-        app.innerHTML = `<div class="p-6 text-red-500 text-center">載入單字失敗</div>`;
+        console.error("獲取單字清單失敗:", error);
+        app.innerHTML = `<div class="p-6 text-red-500">載入單字失敗。</div>`;
     }
 };
 
 /**
- * 渲染單個單字卡片
- */
-const renderWordCard = (word) => {
-    return `
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center group">
-            <div>
-                <h3 class="text-xl font-bold text-slate-800">${word.kanji}</h3>
-                <p class="text-sm text-slate-500">${word.hiragana} • ${word.meaning}</p>
-            </div>
-            <button class="p-2 text-slate-300 hover:text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V5z" clip-rule="evenodd" />
-                </svg>
-            </button>
-        </div>
-    `;
-};
-
-/**
- * 綁定事件
+ * 綁定單字列表頁面事件
  */
 const bindCategoryEvents = (categoryId, categoryName) => {
     // 返回首頁
     document.getElementById('back-to-home').onclick = () => navigateTo('home');
 
-    // 切換設定選單顯示
+    // 右上角設定選單開關
     const settingsBtn = document.getElementById('category-settings-btn');
     const menu = document.getElementById('settings-menu');
+    
     settingsBtn.onclick = (e) => {
         e.stopPropagation();
         menu.classList.toggle('hidden');
     };
 
-    // 點擊外面關閉選單
-    window.onclick = () => menu.classList.add('hidden');
+    // 點擊任何地方關閉選單
+    window.addEventListener('click', () => {
+        if (menu) menu.classList.add('hidden');
+    }, { once: true });
 
-    // 修改類別名稱
+    // 1. 修改類別名稱 (Modify)
     document.getElementById('modify-cat').onclick = async () => {
-        const newName = prompt("Modify category name:", categoryName);
-        if (newName && newName !== categoryName) {
-            await updateCategory(categoryId, newName);
-            renderCategoryDetail(categoryId, newName); // 重新渲染
+        const newName = prompt("請輸入新的類別名稱:", categoryName);
+        if (newName && newName.trim() !== "" && newName !== categoryName) {
+            await updateCategory(categoryId, newName.trim());
+            // 更新成功後重新刷頁面
+            renderCategoryDetail(categoryId, newName.trim());
         }
     };
 
-    // 刪除類別
+    // 2. 複製類別資訊 (Copy)
+    document.getElementById('copy-cat').onclick = () => {
+        const infoString = `Category: ${categoryName} (ID: ${categoryId})`;
+        navigator.clipboard.writeText(infoString).then(() => {
+            alert('類別資訊已成功複製到剪貼簿！');
+        }).catch(err => {
+            console.error('複製失敗:', err);
+        });
+    };
+
+    // 3. 刪除類別 (Delete)
     document.getElementById('delete-cat').onclick = async () => {
-        if (confirm(`Are you sure to delete "${categoryName}"? This cannot be undone.`)) {
+        if (confirm(`確定要刪除「${categoryName}」嗎？`)) {
             await deleteCategory(categoryId);
-            navigateTo('home');
+            navigateTo('home'); // 刪除完跳回首頁
         }
     };
 
-    // 前往新增單字頁面
-    document.getElementById('fab-add-word').onclick = () => {
+    // 4. 前往新增單字頁面 (FAB 點擊)
+    document.getElementById('add-word-fab').onclick = () => {
         navigateTo('addWord', { categoryId, categoryName });
     };
+
+    // 5. 刪除個別單字按鈕
+    const delWordBtns = document.querySelectorAll('.delete-word-btn');
+    delWordBtns.forEach(btn => {
+        btn.onclick = async (e) => {
+            e.stopPropagation();
+            const wordId = btn.getAttribute('data-word-id');
+            if (confirm("確定要刪除這個單字嗎？")) {
+                await deleteWord(wordId, categoryId);
+                renderCategoryDetail(categoryId, categoryName); // 刷新單字清單
+            }
+        };
+    });
 };
