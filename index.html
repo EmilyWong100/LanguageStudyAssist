@@ -3,20 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Japanese Assistant</title>
+    <title>日文學習助手 - Pro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="firebase-config.js"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
-          "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-        }
-      }
-    </script>
-    <script type="module" src="js/app.js"></script>
 
     <style>
         /* 整合自 Figma theme.css 的配色與全域設定 */
@@ -61,16 +52,16 @@
 
     <div id="app">
         <div class="flex items-center justify-center h-screen">
-            <p class="text-slate-400 animate-pulse">程式載入中......</p>
+            <p class="text-slate-400 animate-pulse">程式載入中...</p>
         </div>
     </div>
 
-    <script type="module" src="./js/firebase-config.js"></script>
+    <script type="module" src="./js/firebaseConfig.js"></script>
 
     <script type="module" src="./js/services/categoryService.js"></script>
     <script type="module" src="./js/services/wordService.js"></script>
 
-    <script type="module" src="./js/main.js"></script>
+    <!-- <script type="module" src="./js/main.js"></script> -->
 
     <script>
         // 初始化 Lucide 圖示
