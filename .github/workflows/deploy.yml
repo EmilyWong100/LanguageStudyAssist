@@ -25,20 +25,8 @@ jobs:
         run: |
           mkdir -p js
           cat << 'EOF' > js/firebaseConfig.js
-          // 引入 Firebase 網頁版 SDK
-          import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-          import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-          // 從 GitHub Secrets 讀取完整的 Config 物件
-          const firebaseConfig = ${{ secrets.FIREBASE_API_KEY }};
-
-          // 初始化 Firebase
-          const app = initializeApp(firebaseConfig);
-          
-          // 正確導出 db 供後續的 Service 使用
-          export const db = getFirestore(app);
+          window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};
           EOF
-        
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
