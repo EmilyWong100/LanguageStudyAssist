@@ -5,6 +5,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 /**
  * 這裡的變數名稱必須與你在 GitHub Action 腳本中定義的名稱一致。
  * 如果你之後使用 Vite 進行建置，通常會寫成 import.meta.env.VITE_FIREBASE_CONFIG
+ * push
  */
 const configFromEnv = window.FIREBASE_CONFIG || {};
 
