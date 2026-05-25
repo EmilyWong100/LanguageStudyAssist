@@ -22,11 +22,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Firebase Config File
-        # 使用 EOF 安全區塊，徹底避免因為 JSON 內有換行或特殊字元導致的 sed 語法崩潰
         run: |
           mkdir -p js
           cat << 'EOF' > js/firebaseConfig.js
-          window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};
+          // 引入 Firebase 網頁版 SDK
+          import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+          import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+          // 從 GitHub Secrets 讀取完整的 Config 物件
+          const firebaseConfig = ${{ secrets.FIREBASE_API_KEY }};
+
+          // 初始化 Firebase
+          const app = initializeApp(firebaseConfig);
+          
+          // 正確導出 db 供後續的 Service 使用
+          export const db = getFirestore(app);
           EOF
         
 
