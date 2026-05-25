@@ -25,7 +25,7 @@ jobs:
       - name: Create Firebase Config File
         # 使用 EOF 安全區塊，徹底避免因為 JSON 內有換行或特殊字元導致的 sed 語法崩潰
         run: |
-          cat << 'EOF' > firebase-config.js
+          cat << 'EOF' > firebaseConfig.js
           window.FIREBASE_CONFIG = ${{ secrets.FIREBASE_API_KEY }};
           EOF
         
