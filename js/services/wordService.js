@@ -43,27 +43,24 @@ export const getWordsByCategory = async (categoryId) => {
  * @param {Object} wordData 單字資料物件
  */
 export const addWord = async (wordData) => {
-    // wordData 結構預期：{ categoryId, kanji, hiragana, meaning, sentences[], type }
     try {
-        // 1. 重複檢查：檢查同一個類別中是否已有相同的漢字或假名
-        const isDup = await checkDuplicateWord(wordData.categoryId, wordData.kanji, wordData.hiragana);
-        if (isDup) {
-            throw new Error("此類別中已存在相同的單字或假名。");
+        // 檢查在同一個類別中是否已經有相同的漢字或平假名
+        const isDuplicate = await checkDuplicateWord(wordData.categoryId, wordData.kanji, wordData.hiragana);
+        if (isDuplicate) {
+            throw new Error("This word or hiragana already exists in this category.");
         }
 
-        // 2. 寫入 Firestore
         const docRef = await addDoc(collection(db, COLLECTION_NAME), {
             ...wordData,
             createdAt: serverTimestamp(),
-            lastReviewed: null, // 預留給複習功能
-            level: 0            // 預留給熟悉度功能
+            updatedAt: serverTimestamp()
         });
 
-        // 3. 更新該類別的單字計數
+        // 更新類別中的單字計數
         const allWords = await getWordsByCategory(wordData.categoryId);
         await updateCategoryCount(wordData.categoryId, allWords.length);
 
-        return { id: docRef.id, ...wordData };
+        return docRef.id;
     } catch (error) {
         console.error("新增單字失敗:", error);
         throw error;
@@ -71,9 +68,38 @@ export const addWord = async (wordData) => {
 };
 
 /**
- * 檢查單字是否重複
+ * 修改/更新單字資料
+ * @param {string} wordId 要修改的單字 ID
+ * @param {Object} updateData 新的單字資料 (包含 categoryId, kanji, hiragana, meaning, sentences)
  */
-const checkDuplicateWord = async (categoryId, kanji, hiragana) => {
+export const updateWord = async (wordId, updateData) => {
+    try {
+        // 檢查是否有其他單字（排除自己）使用了相同的漢字或平假名
+        const isDuplicate = await checkDuplicateWord(updateData.categoryId, updateData.kanji, updateData.hiragana, wordId);
+        if (isDuplicate) {
+            throw new Error("Another word with the same kanji or hiragana already exists.");
+        }
+
+        const docRef = doc(db, COLLECTION_NAME, wordId);
+        await updateDoc(docRef, {
+            ...updateData,
+            updatedAt: serverTimestamp() // 記錄修改時間
+        });
+    } catch (error) {
+        console.error("更新單字失敗:", error);
+        throw error;
+    }
+};
+
+/**
+ * 檢查單字是否重複 (擴充支援排除特定單字 ID)
+ * @param {string} categoryId 類別 ID
+ * @param {string} kanji 漢字
+ * @param {string} hiragana 平假名
+ * @param {string|null} excludeWordId 需要排除的單字 ID (修改模式使用)
+ */
+const checkDuplicateWord = async (categoryId, kanji, hiragana, excludeWordId = null) => {
+    // 1. 檢查漢字是否重複
     const q = query(
         collection(db, COLLECTION_NAME),
         where("categoryId", "==", categoryId),
@@ -81,17 +107,27 @@ const checkDuplicateWord = async (categoryId, kanji, hiragana) => {
     );
     const snapshot = await getDocs(q);
     
-    // 如果漢字相同，或者假名也相同，視為重複
-    if (!snapshot.empty) return true;
+    // 如果有找到漢字相同的單字
+    if (!snapshot.empty) {
+        // 新增模式，或者找到的單字不是目前正在修改的這個單字，就視為重複
+        const isDup = snapshot.docs.some(doc => doc.id !== excludeWordId);
+        if (isDup) return true;
+    }
     
-    // 額外檢查假名 (避免漢字不同但讀音相同且已存在的狀況，可依需求調整)
+    // 2. 檢查平假名是否重複
     const q2 = query(
         collection(db, COLLECTION_NAME),
         where("categoryId", "==", categoryId),
         where("hiragana", "==", hiragana)
     );
     const snapshot2 = await getDocs(q2);
-    return !snapshot2.empty;
+    
+    if (!snapshot2.empty) {
+        const isDup2 = snapshot2.docs.some(doc => doc.id !== excludeWordId);
+        if (isDup2) return true;
+    }
+    
+    return false;
 };
 
 /**
@@ -106,22 +142,6 @@ export const deleteWord = async (wordId, categoryId) => {
         await updateCategoryCount(categoryId, allWords.length);
     } catch (error) {
         console.error("刪除單字失敗:", error);
-        throw error;
-    }
-};
-
-/**
- * 修改單字資料
- */
-export const updateWord = async (wordId, updateData) => {
-    try {
-        const docRef = doc(db, COLLECTION_NAME, wordId);
-        await updateDoc(docRef, {
-            ...updateData,
-            updatedAt: serverTimestamp()
-        });
-    } catch (error) {
-        console.error("更新單字失敗:", error);
         throw error;
     }
 };
