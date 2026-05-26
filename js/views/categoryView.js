@@ -143,10 +143,11 @@ const bindEvents = (categoryId, categoryName) => {
     // 點擊頁面其他地方關閉選單
     document.onclick = () => dropdownMenu.classList.add('hidden');
 
-    // 1. 修改類別名稱 (Modify)
+
+// 1. 修改類別名稱 (Modify)
     document.getElementById('edit-cat').onclick = async () => {
         const newName = prompt("請輸入新的類別名稱：", categoryName);
-        if (newName && newName.trim() !== "" && newName !== categoryName) {
+        if (newName && newName.trim() !== '' && newName !== categoryName) {
             await updateCategory(categoryId, newName.trim());
             renderCategoryDetail(categoryId, newName.trim());
         }
