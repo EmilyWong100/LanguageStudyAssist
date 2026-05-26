@@ -22,9 +22,9 @@ export const renderHome = async () => {
                         <h1 class="text-2xl font-bold text-slate-800">My Categories</h1>
                         <p class="text-slate-500 text-sm">Keep learning every day</p>
                     </div>
-                    <button id=\"add-category-btn\" class=\"w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-blue-500 hover:shadow-md transition-all active:scale-95\">
-                        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">
-                            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4v16m8-8H4\" />
+                    <button id="add-category-btn" class="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-blue-500 hover:shadow-md transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                     </button>
                 </header>
